@@ -35,7 +35,7 @@ int main(int argc, char* argv[])
 
         framebuffer.Clear(color_t{ 0, 0, 0, 255 });
 
-        for (int i = 0; i < 1; i++)
+        for (int i = 0; i < 100; i++)
         {
             int x = rand() % 100;
             int y = rand() % 75;
