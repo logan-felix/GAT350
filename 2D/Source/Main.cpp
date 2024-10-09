@@ -11,8 +11,11 @@ int main(int argc, char* argv[])
     renderer.Initialize();
     renderer.CreateWindow("2D", 800, 600);
 
-    Image image;
-    image.Load("mountain.jpg");
+    Image mtnImage;
+    mtnImage.Load("mountain.jpg");
+    Image treeImage;
+    treeImage.Load("tree.png");
+
 
     int fbWidth = 800;
     int fbHeight = 600;
@@ -33,11 +36,6 @@ int main(int argc, char* argv[])
                 quit = true;
             }
         }
-
-        //clear screen
-        //SDL_SetRenderDrawColor(renderer.m_renderer, 0, 0, 0, 0);
-        //SDL_RenderClear(renderer.m_renderer);
-
 
         framebuffer.Clear(color_t{ 0, 0, 0, 255 });
 
@@ -70,7 +68,8 @@ int main(int argc, char* argv[])
         CubicPoint(150, 200, 150, 50, mx, my, 300, 200, t, x, y);
         framebuffer.DrawRect(x, y, 10, 10, { 0, 255, 0, 255 });*/
 
-        framebuffer.DrawImage(0, 0, image);
+        framebuffer.DrawImage(0, 0, mtnImage);
+        framebuffer.DrawImage(100, 100, treeImage);
 
         framebuffer.Update();
 

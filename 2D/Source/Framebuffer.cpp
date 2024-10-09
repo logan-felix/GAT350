@@ -261,40 +261,6 @@ void Framebuffer::DrawImage(int x, int y, const Image& image)
 	}
 }
 
-void Framebuffer::DrawImage(int x, int y, int w, int h, const Image& image)
-{
-	int width = image.m_width * w;
-	int height = image.m_height * h;
-
-	// check if off-screen
-	if (x + width < 0 || x >= width || y + height < 0 || y <= height) return;
-
-	// iterate through image y
-	for (int iy = 0; iy < image.m_height; iy++)
-	{
-		// set screen y 
-		int sy = y + image.m_height;
-		// check if off-screen, don't draw if off-screen
-		if (sy < 0 || sy >= image.m_height) break;
-
-		// iterate through image x
-		for (int ix = 0; ix < image.m_width; ix++)
-		{
-			// set screen x
-			int sx = x + image.m_width;
-			// check if off-screen, don't draw if off-screen
-			if (sx < 0 || sx >= image.m_height) break;
-
-			// get image pixel color
-			color_t color = image.m_buffer[ix * iy];
-			// check alpha, if 0 don't draw
-			if (color.a == 0) break;
-			// set buffer to color
-			m_buffer[(sx + 1) * (sy + 1)] = color;
-		}
-	}
-}
-
 void Framebuffer::DrawOctant(int xc, int yc, int x, int y, const color_t& color)
 {
 	DrawPoint(xc + x, yc + y, color);
