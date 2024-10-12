@@ -1,6 +1,7 @@
 #include "Renderer.h"
 #include "Framebuffer.h"
 #include "MathUtils.h"
+#include "PostProcess.h"
 
 #include <SDL.h>
 #include <iostream>
@@ -11,10 +12,8 @@ int main(int argc, char* argv[])
     renderer.Initialize();
     renderer.CreateWindow("2D", 800, 600);
 
-    Image mtnImage;
-    mtnImage.Load("mountain.jpg");
-    Image treeImage;
-    treeImage.Load("tree.png");
+    Image image;
+    image.Load("scenic.jpg");
 
 
     int fbWidth = 800;
@@ -39,7 +38,7 @@ int main(int argc, char* argv[])
 
         framebuffer.Clear(color_t{ 0, 0, 0, 255 });
 
-        for (int i = 0; i < 0; i++)
+        for (int i = 0; i < 1; i++)
         {
             int x = rand() % fbWidth;
             int y = rand() % fbHeight;
@@ -62,14 +61,26 @@ int main(int argc, char* argv[])
         framebuffer.DrawCubicCurve(150, 200, 150, 50, mx, my, 300, 200, { 255, 0, 255, 255 });
 
         int ticks = SDL_GetTicks();
-        float time = ticks * 0.01f;
+        float time = ticks * 0.001f;
         float t = std::abs(std::sin(time));
         int x, y;
         CubicPoint(150, 200, 150, 50, mx, my, 300, 200, t, x, y);
         framebuffer.DrawRect(x, y, 10, 10, { 0, 255, 0, 255 });*/
 
-        framebuffer.DrawImage(0, 0, mtnImage);
-        framebuffer.DrawImage(100, 100, treeImage);
+        framebuffer.DrawImage(0, 0, image);
+
+        //PostProcess::Invert(framebuffer.m_buffer);
+        //PostProcess::Monochrome(framebuffer.m_buffer);
+        //PostProcess::ColorBalance(framebuffer.m_buffer, 100, 0, 100);
+        //PostProcess::Brightness(framebuffer.m_buffer, 100);
+        //PostProcess::Noise(framebuffer.m_buffer, 80);
+        //PostProcess::Threshold(framebuffer.m_buffer, 100);
+        //PostProcess::Posterize(framebuffer.m_buffer, 5);
+        
+        //PostProcess::BoxBlur(framebuffer.m_buffer, framebuffer.m_width, framebuffer.m_height);
+        //PostProcess::GaussianBlur(framebuffer.m_buffer, framebuffer.m_width, framebuffer.m_height);
+        //PostProcess::Sharpen(framebuffer.m_buffer, framebuffer.m_width, framebuffer.m_height);
+        //PostProcess::Edge(framebuffer.m_buffer, framebuffer.m_width, framebuffer.m_height, 100);
 
         framebuffer.Update();
 

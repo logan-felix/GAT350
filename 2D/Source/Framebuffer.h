@@ -28,6 +28,8 @@ public:
 
 	void DrawImage(int x, int y, const class Image& image);
 
+	std::vector<color_t>& Buffer() { return m_buffer; }
+
 private:
 	void DrawOctant(int xc, int yc, int x, int y, const color_t& color);
 
