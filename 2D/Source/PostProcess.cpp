@@ -88,6 +88,14 @@ void PostProcess::Posterize(std::vector<color_t>& buffer, uint8_t levels)
 		});
 }
 
+void PostProcess::Alpha(std::vector<color_t>& buffer, uint8_t alpha)
+{
+	std::for_each(buffer.begin(), buffer.end(), [alpha](auto& c)
+		{
+			c.a = alpha;
+		});
+}
+
 void PostProcess::BoxBlur(std::vector<color_t>& buffer, int width, int height)
 {
 	std::vector<color_t> source = buffer;
@@ -289,6 +297,47 @@ void PostProcess::Emboss(std::vector<color_t>& buffer, int width, int height)
 		int r = 0;
 		int g = 0;
 		int b = 0;
+
+		for (int iy = 0; iy < 3; iy++)
+		{
+			for (int ix = 0; ix < 3; ix++)
+			{
+				color_t pixel = source[(x + ix - 1) + (y + iy - 1) * width];
+
+				r += pixel.r * k[iy][ix];
+				b += pixel.b * k[iy][ix];
+				g += pixel.g * k[iy][ix];
+			}
+		}
+
+		color_t& color = buffer[i];
+		color.r = static_cast<uint8_t>(Clamp(r, 0, 255));
+		color.g = static_cast<uint8_t>(Clamp(g, 0, 255));
+		color.b = static_cast<uint8_t>(Clamp(b, 0, 255));
+	}
+}
+
+void PostProcess::EmbossGrayscale(std::vector<color_t>& buffer, int width, int height)
+{
+	std::vector<color_t> source = buffer;
+
+	int k[3][3] =
+	{
+		{-1, -1,  0},
+		{ -1,  0,  1 },
+		{ 0,  1,  1 }
+	};
+
+	for (int i = 0; i < buffer.size(); i++)
+	{
+		int x = i % width;
+		int y = i / width;
+
+		if (x < 1 || x + 1 >= width || y < 1 || y + 1 >= height) continue;
+
+		int r = 128;
+		int g = 128;
+		int b = 128;
 
 		for (int iy = 0; iy < 3; iy++)
 		{

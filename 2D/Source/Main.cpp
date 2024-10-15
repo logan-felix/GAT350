@@ -15,6 +15,9 @@ int main(int argc, char* argv[])
     Image image;
     image.Load("scenic.jpg");
 
+    Image imageAlpha;
+    imageAlpha.Load("colors.png");
+    PostProcess::Alpha(imageAlpha.m_buffer, 50);
 
     int fbWidth = 800;
     int fbHeight = 600;
@@ -53,10 +56,10 @@ int main(int argc, char* argv[])
             //framebuffer.DrawCircle(x, y, 20, { 255, 255, 255, 255 });
         }
 
-        /*int mx, my;
+        int mx, my;
         SDL_GetMouseState(&mx, &my);
 
-        framebuffer.DrawLinearCurve(100, 100, 200, 200, { 255, 0, 255, 255 });
+        /*framebuffer.DrawLinearCurve(100, 100, 200, 200, { 255, 0, 255, 255 });
         framebuffer.DrawQuadraticCurve(100, 200, 200, 100, 300, 200, { 255, 0, 255, 255 });
         framebuffer.DrawCubicCurve(150, 200, 150, 50, mx, my, 300, 200, { 255, 0, 255, 255 });
 
@@ -67,7 +70,12 @@ int main(int argc, char* argv[])
         CubicPoint(150, 200, 150, 50, mx, my, 300, 200, t, x, y);
         framebuffer.DrawRect(x, y, 10, 10, { 0, 255, 0, 255 });*/
 
+        SetBlendMode(BlendMode::Normal);
         framebuffer.DrawImage(0, 0, image);
+        SetBlendMode(BlendMode::Multiply);
+        framebuffer.DrawImage(mx, my, imageAlpha);
+
+#pragma region post_process
 
         //PostProcess::Invert(framebuffer.m_buffer);
         //PostProcess::Monochrome(framebuffer.m_buffer);
@@ -82,6 +90,9 @@ int main(int argc, char* argv[])
         //PostProcess::Sharpen(framebuffer.m_buffer, framebuffer.m_width, framebuffer.m_height);
         //PostProcess::Edge(framebuffer.m_buffer, framebuffer.m_width, framebuffer.m_height, 100);
         //PostProcess::Emboss(framebuffer.m_buffer, framebuffer.m_width, framebuffer.m_height);
+        //PostProcess::EmbossGrayscale(framebuffer.m_buffer, framebuffer.m_width, framebuffer.m_height);
+
+#pragma endregion
 
         framebuffer.Update();
 
