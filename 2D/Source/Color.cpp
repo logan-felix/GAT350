@@ -61,9 +61,9 @@ color_t AdditiveBlend(const color_t& src, const color_t& dest)
 color_t MultiplyBlend(const color_t& src, const color_t& dest)
 {
 	color_t color;
-	color.r = (src.r * dest.r) / 255;
-	color.g = (src.g * dest.g) / 255;
-	color.b = (src.b * dest.b) / 255;
+	color.r = (src.r * dest.r) >> 8;
+	color.g = (src.g * dest.g) >> 8;
+	color.b = (src.b * dest.b) >> 8;
 	color.a = src.a;
 
 	return color;
