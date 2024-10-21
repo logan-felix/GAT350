@@ -1,4 +1,5 @@
 #include "Color.h"
+#include <cassert>
 
 color_t(*blend_func)(const color_t& src, const color_t& dest);
 
@@ -25,6 +26,7 @@ void SetBlendMode(BlendMode blendMode)
 
 color_t ColorBlend(const color_t& src, const color_t& dest)
 {
+	assert(blend_func);
 	return blend_func(src, dest);
 }
 

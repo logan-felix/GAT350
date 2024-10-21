@@ -139,10 +139,12 @@ void Framebuffer::DrawLine(int x1, int y1, int x2, int y2, const color_t& color)
 	int error = dx / 2;
 	int ystep = (y1 < y2) ? 1 : -1;
 
+	ClipLine(x1, y1, x2, y2);
+
 	// draw line points
 	for (int x = x1, y = y1; x <= x2; x++)
 	{
-		(steep) ? DrawPoint(y, x, color) : DrawPoint(x, y, color);
+		(steep) ? DrawPointClip(y, x, color) : DrawPointClip(x, y, color);
 
 		// update error term
 		error -= dy;
@@ -282,4 +284,84 @@ void Framebuffer::DrawOctant(int xc, int yc, int x, int y, const color_t& color)
 	DrawPoint(xc - y, yc + x, color);
 	DrawPoint(xc + y, yc - x, color);
 	DrawPoint(xc - y, yc - x, color);
+}
+
+int Framebuffer::ComputeRegionCode(int x, int y)
+{
+	int code = INSIDE;
+
+	if (x < 0) code |= LEFT;
+	else if (x >= m_width) code |= RIGHT;
+	if (y < 0) code |= TOP;
+	else if (y >= m_height) code |= BOTTOM;
+
+	return code;
+}
+
+void Framebuffer::ClipLine(int& x1, int& y1, int& x2, int& y2)
+{
+	// clip line
+	int code1 = ComputeRegionCode(x1, y1);
+	int code2 = ComputeRegionCode(x2, y2);
+
+	while (true)
+	{
+		if (code1 == 0 && code2 == 0)
+		{
+			// Both endpoints are inside the boundary
+			break;
+		}
+		else if (code1 & code2)
+		{
+			// Both endpoints are outside the same boundary
+			break;
+		}
+		else
+		{
+			// At least one endpoint is outside the boundary
+			int codeOut = 0;
+			int x{ 0 }, y{ 0 };
+
+			// Use region code to choose endpoint to clip
+			if (code1 != 0) codeOut = code1; // start point is outside
+			else codeOut = code2; // end point is outside
+
+			// Find intersection point;
+			// will be different for each boundary
+			if (codeOut & TOP)
+			{
+				x = x1 + (x2 - x1) * (0 - y1) / (y2 - y1);
+				y = 0;
+			}
+			else if (codeOut & BOTTOM)
+			{
+				x = x1 + (x2 - x1) * (m_height - y1) / (y2 - y1);
+				y = m_height - 1;
+			}
+			else if (codeOut & LEFT)
+			{
+				y = y1 + (y2 - y1) * (0 - x1) / (x2 - x1);
+				x = 0;
+			}
+			else if (codeOut & RIGHT)
+			{
+				y = y1 + (y2 - y1) * (m_width - x1) / (x2 - x1);
+				x = m_width - 1;
+			}
+
+			// Move outside point to intersection point
+			if (codeOut == code1)
+			{
+				x1 = x;
+				y1 = y;
+				code1 = ComputeRegionCode(x1, y1);
+			}
+			else
+			{
+				x2 = x;
+				y2 = y;
+				code2 = ComputeRegionCode(x2, y2);
+			}
+		}
+	}
 }

@@ -27,6 +27,9 @@ public:
 	void DrawQuadraticCurve(int x1, int y1, int x2, int y2, int x3, int y3, const color_t& color);
 	void DrawCubicCurve(int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4, const color_t& color);
 
+	int ComputeRegionCode(int x, int y);
+	void ClipLine(int& x1, int& y1, int& x2, int& y2);
+
 	void DrawImage(int x, int y, const class Image& image);
 
 	std::vector<color_t>& Buffer() { return m_buffer; }
@@ -41,4 +44,11 @@ public:
 
 	SDL_Texture* m_texture{ nullptr };
 	std::vector<color_t> m_buffer;
+
+private:
+	const int INSIDE = 0; // 0000
+	const int LEFT = 1; // 0001
+	const int RIGHT = 2; // 0010
+	const int BOTTOM = 4; // 0100
+	const int TOP = 8; // 1000
 };
