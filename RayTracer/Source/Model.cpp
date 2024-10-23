@@ -21,9 +21,14 @@ void Model::Draw(Framebuffer& framebuffer, const glm::mat4& model, const Camera&
 		p3 = camera.ModelToView(p3);
 
 		// convert point from view space to projection space
-		glm::ivec2 s1 = camera.ToScreen(p1);
-		glm::ivec2 s2 = camera.ToScreen(p2);
-		glm::ivec2 s3 = camera.ToScreen(p3);
+		glm::ivec2 s1 = camera.ViewToScreen(p1);
+		glm::ivec2 s2 = camera.ViewToScreen(p2);
+		glm::ivec2 s3 = camera.ViewToScreen(p3);
+
+		if (s1.x == -1 || s1.y == -1 || s2.x == -1 || s2.y == -1 || s3.x == -1 || s3.y == -1)
+		{
+			continue;
+		}
 
 		framebuffer.DrawTriangle(s1.x, s1.y, s2.x, s2.y, s3.x, s3.y, m_color);
 	}

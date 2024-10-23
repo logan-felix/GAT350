@@ -26,4 +26,25 @@ struct Transform
 
 		return mx;
 	}
+
+	glm::vec3 GetForward()
+	{
+		glm::mat4 mxr = glm::eulerAngleYXZ(glm::radians(rotation.y), glm::radians(rotation.x), glm::radians(rotation.z));
+
+		return mxr * glm::vec4{ 0, 0, 1, 1 };
+	}
+
+	glm::vec3 GetUp()
+	{
+		glm::mat4 mxr = glm::eulerAngleYXZ(glm::radians(rotation.y), glm::radians(rotation.x), glm::radians(rotation.z));
+
+		return mxr * glm::vec4{ 0, 1, 0, 1 };
+	}
+
+	glm::vec3 GetRight()
+	{
+		glm::mat4 mxr = glm::eulerAngleYXZ(glm::radians(rotation.y), glm::radians(rotation.x), glm::radians(rotation.z));
+
+		return mxr * glm::vec4{ 1, 0, 0, 1 };
+	}
 };

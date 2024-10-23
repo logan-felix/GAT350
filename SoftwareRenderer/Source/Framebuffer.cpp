@@ -34,15 +34,15 @@ void Framebuffer::Clear(const color_t& color)
 
 void Framebuffer::DrawPoint(int x, int y, const color_t& color)
 {
-	color_t& dest = m_buffer[x + y * m_width];
+	color_t& dest = m_buffer[x + (y * m_width)];
 	dest = ColorBlend(color, dest);
 }
 
 void Framebuffer::DrawPointClip(int x, int y, const color_t& color)
 {
-	color_t& dest = m_buffer[x + y * m_width];
-
 	if (x >= m_width || x < 0 || y >= m_height || y < 0) return;
+
+	color_t& dest = m_buffer[x + (y * m_width)];
 	dest = AlphaBlend(color, dest);
 }
 
@@ -57,17 +57,9 @@ void Framebuffer::DrawRect(int x, int y, int w, int h, const color_t& color)
 
 	for (int sy = y1; sy < y2; sy++)
 	{
-		int index = x1 + sy * m_width;
+		int index = x1 + (sy * m_width);
 		std::fill(m_buffer.begin() + index, m_buffer.begin() + (index + x2 - x1), color);
 	}
-
-	/*for (int row = 0; row < h; row++)
-	{
-		for (int col = 0; col < w; col++)
-		{
-			DrawPoint(x + col, y + row, color);
-		}
-	}*/
 }
 
 void Framebuffer::DrawLineSlope(int x1, int y1, int x2, int y2, const color_t& color)
@@ -94,8 +86,8 @@ void Framebuffer::DrawLineSlope(int x1, int y1, int x2, int y2, const color_t& c
 			for (int x = x1; x <= x2; x++)
 			{
 				// y = mx + b
-				int y = (int)(m * x) + b;
-				m_buffer[x + y * m_width] = color;
+				int y = (int)round((m * x) + b);
+				m_buffer[x + (y * m_width)] = color;
 			}
 		}
 		else
@@ -104,7 +96,7 @@ void Framebuffer::DrawLineSlope(int x1, int y1, int x2, int y2, const color_t& c
 			{
 				// x = (y - b) / m
 				int x = (int)round((y - b) / m);
-				m_buffer[x + y * m_width] = color;
+				m_buffer[x + (y * m_width)] = color;
 			}
 		}
 	}
@@ -112,6 +104,8 @@ void Framebuffer::DrawLineSlope(int x1, int y1, int x2, int y2, const color_t& c
 
 void Framebuffer::DrawLine(int x1, int y1, int x2, int y2, const color_t& color)
 {
+	ClipLine(x1, y1, x2, y2);
+
 	// calculate deltas
 	int dx = x2 - x1;
 	int dy = y2 - y1;
@@ -139,12 +133,17 @@ void Framebuffer::DrawLine(int x1, int y1, int x2, int y2, const color_t& color)
 	int error = dx / 2;
 	int ystep = (y1 < y2) ? 1 : -1;
 
-	ClipLine(x1, y1, x2, y2);
-
 	// draw line points
 	for (int x = x1, y = y1; x <= x2; x++)
 	{
-		(steep) ? DrawPointClip(y, x, color) : DrawPointClip(x, y, color);
+		if (steep)
+		{
+			DrawPointClip(y, x, color);
+		}
+		else
+		{
+			DrawPointClip(x, y, color);
+		}
 
 		// update error term
 		error -= dy;
@@ -291,9 +290,9 @@ int Framebuffer::ComputeRegionCode(int x, int y)
 	int code = INSIDE;
 
 	if (x < 0) code |= LEFT;
-	else if (x >= m_width) code |= RIGHT;
+	if (x > m_width) code |= RIGHT;
 	if (y < 0) code |= TOP;
-	else if (y >= m_height) code |= BOTTOM;
+	if (y > m_height) code |= BOTTOM;
 
 	return code;
 }
@@ -323,8 +322,7 @@ void Framebuffer::ClipLine(int& x1, int& y1, int& x2, int& y2)
 			int x{ 0 }, y{ 0 };
 
 			// Use region code to choose endpoint to clip
-			if (code1 != 0) codeOut = code1; // start point is outside
-			else codeOut = code2; // end point is outside
+			codeOut = (code1) ? code1 : code2;
 
 			// Find intersection point;
 			// will be different for each boundary
@@ -336,7 +334,7 @@ void Framebuffer::ClipLine(int& x1, int& y1, int& x2, int& y2)
 			else if (codeOut & BOTTOM)
 			{
 				x = x1 + (x2 - x1) * (m_height - y1) / (y2 - y1);
-				y = m_height - 1;
+				y = m_height;
 			}
 			else if (codeOut & LEFT)
 			{
@@ -346,7 +344,7 @@ void Framebuffer::ClipLine(int& x1, int& y1, int& x2, int& y2)
 			else if (codeOut & RIGHT)
 			{
 				y = y1 + (y2 - y1) * (m_width - x1) / (x2 - x1);
-				x = m_width - 1;
+				x = m_width;
 			}
 
 			// Move outside point to intersection point

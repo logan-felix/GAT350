@@ -12,8 +12,8 @@ public:
 	void SetProjection(float fov, float aspect, float near, float far);
 
 	glm::vec3 ModelToView(const glm::vec3& position) const;
-	glm::vec3 ViewToProjection(const glm::vec3& position) const;
-	glm::ivec2 ToScreen(const glm::vec3& position) const;
+	glm::vec4 ViewToProjection(const glm::vec3& position) const;
+	glm::ivec2 ViewToScreen(const glm::vec3& position) const;
 
 	const glm::mat4& GetView() { return m_view; }
 	const glm::mat4& GetProjection() { return m_projection; }

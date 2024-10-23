@@ -7,6 +7,8 @@
 #include "ETime.h"
 #include "Input.h"
 #include "Camera.h"
+#include "Actor.h"
+#include "Random.h"
 
 #include <SDL.h>
 #include <iostream>
@@ -17,12 +19,16 @@ int main(int argc, char* argv[])
 {
     // initialize
     Time time;
-    Input input;
-    input.Initialize();
 
     Renderer renderer;
     renderer.Initialize();
-    renderer.CreateWindow("2D", 800, 600);
+    renderer.CreateWindow("SoftwareRenderer", 800, 600);
+
+    Input input;
+    input.Initialize();
+    input.Update();
+
+    SetBlendMode(BlendMode::Normal);
 
     Camera camera(800, 600);
     camera.SetView(glm::vec3{ 0, 0, -50 }, glm::vec3{ 0 });
@@ -35,17 +41,27 @@ int main(int argc, char* argv[])
     Image imageAlpha;
     imageAlpha.Load("colors.png");
     PostProcess::Alpha(imageAlpha.m_buffer, 100);
-    SetBlendMode(BlendMode::Normal);
 
     int fbWidth = 800;
     int fbHeight = 600;
     Framebuffer framebuffer(renderer, fbWidth, fbHeight);
 
-    //vertices_t vertices = { { -5, 5, 0 }, { 5, 5, 0 }, { -5, -5, 0 } };
-    Model model;
-    model.Load("teapot.obj");
-    model.SetColor({ 0, 255, 0, 255 });
-    Transform transform{ {0, 0, 0}, {0, 0, 0}, glm::vec3{ 2 } };
+    vertices_t vertices = { { -5, 5, 0 }, { 5, 5, 0 }, { -5, -5, 0 } };
+    //Model model;
+    std::shared_ptr<Model> model = std::make_shared<Model>();
+    model->Load("teapot.obj");
+    model->SetColor({ 0, 255, 0, 255 });
+
+    std::vector<std::unique_ptr<Actor>> actors;
+
+    for (int i = 0; i < 1; i++)
+    {
+        Transform transform{ { randomf(-10.0f, 10.0f), randomf(-10.0f, 10.0f), randomf(-10.0f, 10.0f)}, glm::vec3{0}, glm::vec3{1}};
+        std::unique_ptr<Actor> actor = std::make_unique<Actor>(transform, model);
+        actor->SetColor({ (uint8_t)random(256), (uint8_t)random(256), (uint8_t)random(256), 255 });
+        actors.push_back(std::move(actor));
+    }
+
 
     bool quit = false;
     while (!quit)
@@ -124,19 +140,37 @@ int main(int argc, char* argv[])
 
 #pragma endregion
 
-        glm::vec3 direction{ 0 };
-        if (input.GetKeyDown(SDL_SCANCODE_RIGHT)) direction.x = 1;
-        if (input.GetKeyDown(SDL_SCANCODE_LEFT)) direction.x = -1;
-        if (input.GetKeyDown(SDL_SCANCODE_UP)) direction.y = 1;
-        if (input.GetKeyDown(SDL_SCANCODE_DOWN)) direction.y = -1;
-        if (input.GetKeyDown(SDL_SCANCODE_W)) direction.z = 1;
-        if (input.GetKeyDown(SDL_SCANCODE_S)) direction.z = -1;
+        if (input.GetMouseButtonDown(2))
+        {
+            glm::vec3 direction{ 0 };
+            if (input.GetKeyDown(SDL_SCANCODE_RIGHT)) direction.x = -1;
+            if (input.GetKeyDown(SDL_SCANCODE_LEFT)) direction.x = 1;
+            if (input.GetKeyDown(SDL_SCANCODE_UP)) direction.y = -1;
+            if (input.GetKeyDown(SDL_SCANCODE_DOWN)) direction.y = 1;
+            if (input.GetKeyDown(SDL_SCANCODE_W)) direction.z = -1;
+            if (input.GetKeyDown(SDL_SCANCODE_S)) direction.z = 1;
 
-        transform.position += direction * 70.0f * time.GetDeltaTime();
-        camera.SetView(cameraTransform.position, cameraTransform.position + glm::vec3{ 0, 0, 1 });
+            cameraTransform.rotation.y += input.GetMouseRelative().x * 0.25f;
+            cameraTransform.rotation.x += input.GetMouseRelative().y * 0.25f;
 
-        //transform.rotation.z += 90 * time.GetDeltaTime();
-        model.Draw(framebuffer, transform.GetMatrix(), camera);
+            glm::vec3 offset = cameraTransform.GetMatrix() * glm::vec4{ direction, 0 };
+
+            cameraTransform.position += offset * 70.0f * time.GetDeltaTime();
+        }
+        else
+        {
+            input.SetRelativeMode(false);
+        }
+
+        camera.SetView(cameraTransform.position, cameraTransform.position + cameraTransform.GetForward());
+
+        /*cameraTransform.rotation.z += 90 * time.GetDeltaTime();
+        model->Draw(framebuffer, cameraTransform.GetMatrix(), camera);*/
+
+        for (auto& actor : actors)
+        {
+            actor->Draw(framebuffer, camera);
+        }
 
         framebuffer.Update();
 
