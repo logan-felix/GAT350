@@ -182,7 +182,11 @@
     (defined(__clang_major__) && __clang_major__ >= 10))
 #define SDL_FALLTHROUGH __attribute__((__fallthrough__))
 #else
+#if defined(__cplusplus) && __cplusplus >= 201703L
+#define SDL_FALLTHROUGH [[fallthrough]]
+#else
 #define SDL_FALLTHROUGH do {} while (0) /* fallthrough */
+#endif
 #endif /* SDL_HAS_FALLTHROUGH */
 #undef SDL_HAS_FALLTHROUGH
 #endif /* C++17 or C2x */
