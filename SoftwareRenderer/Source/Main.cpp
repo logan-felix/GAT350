@@ -158,8 +158,8 @@ int main(int argc, char* argv[])
         if (input.GetKeyDown(SDL_SCANCODE_S)) direction.z = -0.5f; // camera backward
         if (input.GetKeyDown(SDL_SCANCODE_D)) direction.x = 0.5f; // camera right
         if (input.GetKeyDown(SDL_SCANCODE_A)) direction.x = -0.5f; // camera left
-        if (input.GetKeyDown(SDL_SCANCODE_E)) direction.y = 0.5f; // camera up
-        if (input.GetKeyDown(SDL_SCANCODE_Q)) direction.y = -0.5f; // camera down
+        if (input.GetKeyDown(SDL_SCANCODE_SPACE)) direction.y = 0.5f; // camera up
+        if (input.GetKeyDown(SDL_SCANCODE_LSHIFT)) direction.y = -0.5f; // camera down
 
         if (input.GetKeyDown(SDL_SCANCODE_UP)) cameraTransform.rotation.x -= 2; // look up
         if (input.GetKeyDown(SDL_SCANCODE_DOWN)) cameraTransform.rotation.x += 2; // look down
