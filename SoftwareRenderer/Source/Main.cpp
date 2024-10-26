@@ -36,7 +36,7 @@ int main(int argc, char* argv[])
     Transform cameraTransform{ { 0, 0, -20 } };
 
     Image image;
-    image.Load("scenic.jpg");
+    image.Load("space.jpg");
 
     Image imageAlpha;
     imageAlpha.Load("colors.png");
@@ -48,19 +48,30 @@ int main(int argc, char* argv[])
 
     vertices_t vertices = { { -5, 5, 0 }, { 5, 5, 0 }, { -5, -5, 0 } };
     //Model model;
-    std::shared_ptr<Model> model = std::make_shared<Model>();
-    model->Load("teapot.obj");
-    model->SetColor({ 0, 255, 0, 255 });
+    std::shared_ptr<Model> teapotModel = std::make_shared<Model>();
+    std::shared_ptr<Model> torusModel = std::make_shared<Model>();
+    std::shared_ptr<Model> sphereModel = std::make_shared<Model>();
+
+    teapotModel->Load("teapot.obj");
+    torusModel->Load("torus.obj");
+    sphereModel->Load("sphere.obj");
 
     std::vector<std::unique_ptr<Actor>> actors;
 
-    for (int i = 0; i < 1; i++)
-    {
-        Transform transform{ { randomf(-10.0f, 10.0f), randomf(-10.0f, 10.0f), randomf(-10.0f, 10.0f)}, glm::vec3{0}, glm::vec3{1}};
-        std::unique_ptr<Actor> actor = std::make_unique<Actor>(transform, model);
-        actor->SetColor({ (uint8_t)random(256), (uint8_t)random(256), (uint8_t)random(256), 255 });
-        actors.push_back(std::move(actor));
-    }
+    Transform transform{ { -20, 0, -30 }, glm::vec3{0}, glm::vec3{2}};
+    std::unique_ptr<Actor> teapot = std::make_unique<Actor>(transform, teapotModel);
+    transform = { { 30, 0, 20 }, glm::vec3{0}, glm::vec3{5} };
+    std::unique_ptr<Actor> torus = std::make_unique<Actor>(transform, torusModel);
+    transform = { { 0, 0, 0 }, glm::vec3{0}, glm::vec3{3} };
+    std::unique_ptr<Actor> sphere = std::make_unique<Actor>(transform, sphereModel);
+
+    teapot->SetColor({ 100, 255, 100, 255 });
+    torus->SetColor({ 255, 255, 100, 255 });
+    sphere->SetColor({ 100, 100, 255, 255 });
+
+    actors.push_back(std::move(teapot));
+    actors.push_back(std::move(torus));
+    actors.push_back(std::move(sphere));
 
 
     bool quit = false;
@@ -85,6 +96,8 @@ int main(int argc, char* argv[])
 
         // render
         framebuffer.Clear(color_t{ 0, 0, 0, 255 });
+
+        framebuffer.DrawImage(0, 0, image);
 
         for (int i = 0; i < 1; i++)
         {
@@ -140,27 +153,32 @@ int main(int argc, char* argv[])
 
 #pragma endregion
 
+        glm::vec3 direction{ 0 };
+        if (input.GetKeyDown(SDL_SCANCODE_W)) direction.z = 0.5f; // camera forward
+        if (input.GetKeyDown(SDL_SCANCODE_S)) direction.z = -0.5f; // camera backward
+        if (input.GetKeyDown(SDL_SCANCODE_D)) direction.x = 0.5f; // camera right
+        if (input.GetKeyDown(SDL_SCANCODE_A)) direction.x = -0.5f; // camera left
+        if (input.GetKeyDown(SDL_SCANCODE_E)) direction.y = 0.5f; // camera up
+        if (input.GetKeyDown(SDL_SCANCODE_Q)) direction.y = -0.5f; // camera down
+
+        if (input.GetKeyDown(SDL_SCANCODE_UP)) cameraTransform.rotation.x -= 2; // look up
+        if (input.GetKeyDown(SDL_SCANCODE_DOWN)) cameraTransform.rotation.x += 2; // look down
+        if (input.GetKeyDown(SDL_SCANCODE_LEFT)) cameraTransform.rotation.y -= 2; // look left
+        if (input.GetKeyDown(SDL_SCANCODE_RIGHT)) cameraTransform.rotation.y += 2; // look right
+
         if (input.GetMouseButtonDown(2))
         {
-            glm::vec3 direction{ 0 };
-            if (input.GetKeyDown(SDL_SCANCODE_RIGHT)) direction.x = -1;
-            if (input.GetKeyDown(SDL_SCANCODE_LEFT)) direction.x = 1;
-            if (input.GetKeyDown(SDL_SCANCODE_UP)) direction.y = -1;
-            if (input.GetKeyDown(SDL_SCANCODE_DOWN)) direction.y = 1;
-            if (input.GetKeyDown(SDL_SCANCODE_W)) direction.z = -1;
-            if (input.GetKeyDown(SDL_SCANCODE_S)) direction.z = 1;
-
             cameraTransform.rotation.y += input.GetMouseRelative().x * 0.25f;
             cameraTransform.rotation.x += input.GetMouseRelative().y * 0.25f;
-
-            glm::vec3 offset = cameraTransform.GetMatrix() * glm::vec4{ direction, 0 };
-
-            cameraTransform.position += offset * 70.0f * time.GetDeltaTime();
         }
         else
         {
             input.SetRelativeMode(false);
         }
+
+        glm::vec3 offset = cameraTransform.GetMatrix() * glm::vec4{ direction, 0 };
+
+        cameraTransform.position += offset * 50.0f * time.GetDeltaTime();
 
         camera.SetView(cameraTransform.position, cameraTransform.position + cameraTransform.GetForward());
 
