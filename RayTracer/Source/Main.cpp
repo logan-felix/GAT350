@@ -12,6 +12,9 @@
 #include "Tracer.h"
 #include "Scene.h"
 #include "Material.h"
+#include "Sphere.h"
+#include "Plane.h"
+#include "Color.h"
 
 #include <SDL.h>
 #include <iostream>
@@ -39,9 +42,34 @@ int main(int argc, char* argv[])
     Scene scene;
 
     std::shared_ptr<Material> material = std::make_shared<Material>(color3_t{ 1, 0, 0 });
-    auto object = std::make_unique<Sphere>(glm::vec3{ 0, 0, -40 }, 2.0f, material);
 
-    scene.AddObject(std::move(object));
+    std::shared_ptr<Material> gray = std::make_shared<Material>(color3_t{ 0.5f });
+    std::shared_ptr<Material> red = std::make_shared<Material>(color3_t{ 1, 0, 0 });
+    std::shared_ptr<Material> yellow = std::make_shared<Material>(color3_t{ 1, 1, 0 });
+    std::shared_ptr<Material> green = std::make_shared<Material>(color3_t{ 0, 1, 0 }); 
+    std::shared_ptr<Material> cyan = std::make_shared<Material>(color3_t{ 0, 1, 1 });
+    std::shared_ptr<Material> blue = std::make_shared<Material>(color3_t{ 0, 0, 1 });
+    std::shared_ptr<Material> magenta = std::make_shared<Material>(color3_t{ 1, 0, 1 });
+
+    std::vector<std::shared_ptr<Material>> materials;
+    materials.push_back(gray);
+    materials.push_back(red); 
+    materials.push_back(yellow);
+    materials.push_back(green); 
+    materials.push_back(cyan); 
+    materials.push_back(blue);
+    materials.push_back(magenta);
+
+    for (int i = 0; i < 10; i++)
+    {
+        float random_radius = randomf(0.5f, 2.0f);
+        auto random_material = materials[random(1, materials.size() - 1)];
+        auto object = std::make_unique<Sphere>(random(glm::vec3{ -10 }, glm::vec3{ 10 }), random_radius, random_material);
+        scene.AddObject(std::move(object));
+    }
+
+    std::unique_ptr<Plane> plane = std::make_unique<Plane>(glm::vec3{ 0, -5, 0 }, glm::vec3{ 0, 1, 0 }, gray); 
+    scene.AddObject(std::move(plane)); 
 
     bool quit = false;
     while (!quit)
@@ -63,15 +91,13 @@ int main(int argc, char* argv[])
         }
 
         // render
-        framebuffer.Clear(color_t{ 0, 255, 0, 255 });
+        framebuffer.Clear(ColorConvert(color3_t{ 0.25f, 1.0f, 0.25f }));
 
         scene.Render(framebuffer, camera);
 
         framebuffer.Update();
 
-        renderer = framebuffer;
-        //renderer.CopyFramebuffer(framebuffer);
-
+        renderer.CopyFramebuffer(framebuffer);
         // show screen
         SDL_RenderPresent(renderer.m_renderer);
     }

@@ -22,5 +22,5 @@ bool Sphere::Hit(const ray_t& ray)
     // If discriminant > 0, two solutions (the ray hits the sphere twice)
     float discriminant = (b * b) - (4 * a * c);
 
-    return false;
+    return discriminant >= 0;
 }

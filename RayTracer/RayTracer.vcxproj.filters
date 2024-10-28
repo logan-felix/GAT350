@@ -53,6 +53,9 @@
     <ClCompile Include="Source\Sphere.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Plane.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Renderer.h">
@@ -110,6 +113,9 @@
       <Filter>Source</Filter>
     </ClInclude>
     <ClInclude Include="Source\Sphere.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Plane.h">
       <Filter>Source</Filter>
     </ClInclude>
   </ItemGroup>

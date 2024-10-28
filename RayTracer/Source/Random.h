@@ -10,6 +10,15 @@ inline float randomf() { return rand() / (float)RAND_MAX; } // 0-1
 inline float randomf(float max) { return max * randomf(); }
 inline float randomf(float min, float max) { return min + randomf(max - min); }
 
+inline glm::vec3 random(const glm::vec3& v1, const glm::vec3& v2)
+{
+    return glm::vec3{
+        randomf(v1.x, v2.x),
+        randomf(v1.y, v2.y),
+        randomf(v1.z, v2.z)
+    };
+}
+
 inline glm::vec2 randomOnUnitCircle() 
 {
 	float angle = randomf(0, 360);
