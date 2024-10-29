@@ -23,53 +23,56 @@
 
 int main(int argc, char* argv[])
 {
+    srand((unsigned int)time(NULL));
+
     // initialize
     Time time;
 
     Renderer renderer;
     renderer.Initialize();
-    renderer.CreateWindow("RayTracer", 800, 600);
+    renderer.CreateWindow("RayTracer", 1200, 675);
 
     SetBlendMode(BlendMode::Normal);
 
-    int fbWidth = 800;
-    int fbHeight = 600;
-    Framebuffer framebuffer(renderer, fbWidth, fbHeight);
+    Framebuffer framebuffer(renderer, renderer.m_width, renderer.m_height);
 
     Camera camera{ 70.0f, framebuffer.m_width / (float)framebuffer.m_height };
     camera.SetView({ 0, 0, -20 }, { 0, 0, 0 });
 
     Scene scene;
 
-    std::shared_ptr<Material> material = std::make_shared<Material>(color3_t{ 1, 0, 0 });
-
-    std::shared_ptr<Material> gray = std::make_shared<Material>(color3_t{ 0.5f });
-    std::shared_ptr<Material> red = std::make_shared<Material>(color3_t{ 1, 0, 0 });
-    std::shared_ptr<Material> yellow = std::make_shared<Material>(color3_t{ 1, 1, 0 });
-    std::shared_ptr<Material> green = std::make_shared<Material>(color3_t{ 0, 1, 0 }); 
-    std::shared_ptr<Material> cyan = std::make_shared<Material>(color3_t{ 0, 1, 1 });
-    std::shared_ptr<Material> blue = std::make_shared<Material>(color3_t{ 0, 0, 1 });
-    std::shared_ptr<Material> magenta = std::make_shared<Material>(color3_t{ 1, 0, 1 });
+    std::shared_ptr<Material> lightgray = std::make_shared<Lambertian>(color3_t{ 0.75f });
+    std::shared_ptr<Material> gray = std::make_shared<Lambertian>(color3_t{ 0.5f });
+    std::shared_ptr<Material> red = std::make_shared<Metal>(color3_t{ 1, 0, 0 }, 0.0f);
+    //std::shared_ptr<Material> yellow = std::make_shared<Lambertian>(color3_t{ 1, 1, 0 });
+    std::shared_ptr<Material> green = std::make_shared<Lambertian>(color3_t{ 0, 1, 0 }); 
+    //std::shared_ptr<Material> cyan = std::make_shared<Lambertian>(color3_t{ 0, 1, 1 });
+    std::shared_ptr<Material> blue = std::make_shared<Metal>(color3_t{ 0, 0, 1 }, 0.1f);
+    //std::shared_ptr<Material> magenta = std::make_shared<Lambertian>(color3_t{ 1, 0, 1 });
 
     std::vector<std::shared_ptr<Material>> materials;
-    materials.push_back(gray);
-    materials.push_back(red); 
-    materials.push_back(yellow);
-    materials.push_back(green); 
-    materials.push_back(cyan); 
+    //materials.push_back(gray);
+    materials.push_back(red);
+    //materials.push_back(yellow);
+    materials.push_back(green);
+    //materials.push_back(cyan);
     materials.push_back(blue);
-    materials.push_back(magenta);
+    //materials.push_back(magenta);
+
+    std::unique_ptr<Plane> plane = std::make_unique<Plane>(glm::vec3{ 0, -5, 0 }, glm::vec3{ 0, 1, 0 }, gray); 
 
     for (int i = 0; i < 10; i++)
     {
-        float random_radius = randomf(0.5f, 2.0f);
-        auto random_material = materials[random(1, materials.size() - 1)];
+        float random_radius = randomf(0.5f, 3.0f);
+        auto random_material = materials[random(0, (int)materials.size())];
         auto object = std::make_unique<Sphere>(random(glm::vec3{ -10 }, glm::vec3{ 10 }), random_radius, random_material);
         scene.AddObject(std::move(object));
     }
 
-    std::unique_ptr<Plane> plane = std::make_unique<Plane>(glm::vec3{ 0, -5, 0 }, glm::vec3{ 0, 1, 0 }, gray); 
-    scene.AddObject(std::move(plane)); 
+    scene.AddObject(std::move(plane));
+
+    framebuffer.Clear(ColorConvert(color4_t{ 0, 0.25f, 0, 1 }));
+    scene.Render(framebuffer, camera);
 
     bool quit = false;
     while (!quit)
@@ -91,9 +94,7 @@ int main(int argc, char* argv[])
         }
 
         // render
-        framebuffer.Clear(ColorConvert(color3_t{ 0.25f, 1.0f, 0.25f }));
-
-        scene.Render(framebuffer, camera);
+        
 
         framebuffer.Update();
 

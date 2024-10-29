@@ -1,5 +1,7 @@
 #pragma once
 #include <glm/glm.hpp>
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/norm.hpp>
 #include <random>
 
 inline int random() { return rand(); }
@@ -23,4 +25,20 @@ inline glm::vec2 randomOnUnitCircle()
 {
 	float angle = randomf(0, 360);
 	return { glm::cos(glm::radians(angle)), glm::sin(glm::radians(angle)) };
+}
+
+inline glm::vec3 randomInUnitSphere()
+{
+    glm::vec3 v;
+    do
+    {
+        v = random(glm::vec3{ -1 }, glm::vec3{ 1 });
+    } while (glm::length2(v) >= 1.0f);
+
+    return v;
+}
+
+inline glm::vec3 randomOnUnitSphere()
+{
+    return glm::normalize(randomInUnitSphere());
 }

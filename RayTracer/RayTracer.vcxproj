@@ -152,6 +152,7 @@
     <ClCompile Include="Source\Image.cpp" />
     <ClCompile Include="Source\Input.cpp" />
     <ClCompile Include="Source\Main.cpp" />
+    <ClCompile Include="Source\Material.cpp" />
     <ClCompile Include="Source\Model.cpp" />
     <ClCompile Include="Source\Plane.cpp" />
     <ClCompile Include="Source\PostProcess.cpp" />

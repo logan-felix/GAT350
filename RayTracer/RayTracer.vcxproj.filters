@@ -9,114 +9,123 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
+    <Filter Include="Source\Header Files">
+      <UniqueIdentifier>{b1566dc3-efed-4288-995f-7225bf5dd3c2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\CPP Files">
+      <UniqueIdentifier>{c8e0d762-85dd-4493-a65b-d220c71f43d4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\Main.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Renderer.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Framebuffer.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Image.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\PostProcess.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Color.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Model.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\ETime.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Input.cpp">
-      <Filter>Source</Filter>
+    <ClCompile Include="Source\Actor.cpp">
+      <Filter>Source\CPP Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Camera.cpp">
-      <Filter>Source</Filter>
+      <Filter>Source\CPP Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Actor.cpp">
-      <Filter>Source</Filter>
+    <ClCompile Include="Source\Color.cpp">
+      <Filter>Source\CPP Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Tracer.cpp">
-      <Filter>Source</Filter>
+    <ClCompile Include="Source\ETime.cpp">
+      <Filter>Source\CPP Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Scene.cpp">
-      <Filter>Source</Filter>
+    <ClCompile Include="Source\Framebuffer.cpp">
+      <Filter>Source\CPP Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Sphere.cpp">
-      <Filter>Source</Filter>
+    <ClCompile Include="Source\Image.cpp">
+      <Filter>Source\CPP Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Input.cpp">
+      <Filter>Source\CPP Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Main.cpp">
+      <Filter>Source\CPP Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Material.cpp">
+      <Filter>Source\CPP Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Model.cpp">
+      <Filter>Source\CPP Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Plane.cpp">
-      <Filter>Source</Filter>
+      <Filter>Source\CPP Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\PostProcess.cpp">
+      <Filter>Source\CPP Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Renderer.cpp">
+      <Filter>Source\CPP Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene.cpp">
+      <Filter>Source\CPP Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Sphere.cpp">
+      <Filter>Source\CPP Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Tracer.cpp">
+      <Filter>Source\CPP Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Source\Renderer.h">
-      <Filter>Source</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Framebuffer.h">
-      <Filter>Source</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\MathUtils.h">
-      <Filter>Source</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Image.h">
-      <Filter>Source</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\PostProcess.h">
-      <Filter>Source</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Color.h">
-      <Filter>Source</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Model.h">
-      <Filter>Source</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Random.h">
-      <Filter>Source</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\ETime.h">
-      <Filter>Source</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Input.h">
-      <Filter>Source</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Transform.h">
-      <Filter>Source</Filter>
+    <ClInclude Include="Source\Actor.h">
+      <Filter>Source\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Camera.h">
-      <Filter>Source</Filter>
+      <Filter>Source\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Actor.h">
-      <Filter>Source</Filter>
+    <ClInclude Include="Source\Color.h">
+      <Filter>Source\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Ray.h">
-      <Filter>Source</Filter>
+    <ClInclude Include="Source\ETime.h">
+      <Filter>Source\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Tracer.h">
-      <Filter>Source</Filter>
+    <ClInclude Include="Source\Framebuffer.h">
+      <Filter>Source\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Scene.h">
-      <Filter>Source</Filter>
+    <ClInclude Include="Source\Image.h">
+      <Filter>Source\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Input.h">
+      <Filter>Source\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Material.h">
-      <Filter>Source</Filter>
+      <Filter>Source\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\SceneObject.h">
-      <Filter>Source</Filter>
+    <ClInclude Include="Source\MathUtils.h">
+      <Filter>Source\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Sphere.h">
-      <Filter>Source</Filter>
+    <ClInclude Include="Source\Model.h">
+      <Filter>Source\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Plane.h">
-      <Filter>Source</Filter>
+      <Filter>Source\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\PostProcess.h">
+      <Filter>Source\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Random.h">
+      <Filter>Source\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Ray.h">
+      <Filter>Source\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Renderer.h">
+      <Filter>Source\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene.h">
+      <Filter>Source\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SceneObject.h">
+      <Filter>Source\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Sphere.h">
+      <Filter>Source\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Tracer.h">
+      <Filter>Source\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Transform.h">
+      <Filter>Source\Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
