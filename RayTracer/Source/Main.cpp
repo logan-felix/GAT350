@@ -43,7 +43,7 @@ int main(int argc, char* argv[])
     Scene scene;
 
     std::shared_ptr<Material> lightgray = std::make_shared<Lambertian>(color3_t{ 0.75f });
-    std::shared_ptr<Material> gray = std::make_shared<Lambertian>(color3_t{ 0.5f });
+    std::shared_ptr<Material> gray = std::make_shared<Metal>(color3_t{ 0.5f }, 0.1f);
     std::shared_ptr<Material> white = std::make_shared<Dielectric>(color3_t{ 1 }, 1.333f);
     std::shared_ptr<Material> red = std::make_shared<Metal>(color3_t{ 1, 0, 0 }, 0.0f);
     std::shared_ptr<Material> yellow = std::make_shared<Dielectric>(color3_t{ 1, 1, 0 }, 1.333f);
@@ -62,15 +62,18 @@ int main(int argc, char* argv[])
     materials.push_back(blue);
     materials.push_back(magenta);
 
+    std::unique_ptr<Model> model = std::make_unique<Model>(gray);
+    model->Load("teapot.obj");
+
     std::unique_ptr<Plane> plane = std::make_unique<Plane>(glm::vec3{ 0, -5, 0 }, glm::vec3{ 0, 1, 0 }, gray);
     
-    std::unique_ptr<Triangle> triangle = std::make_unique<Triangle>
+    /*std::unique_ptr<Triangle> triangle = std::make_unique<Triangle>
         (
             glm::vec3{ -10, 10, -5 },
             glm::vec3{ 10, 5, 0 },
             glm::vec3{ 0, -5, 5 },
             green
-        );
+        );*/
 
     /*for (int i = 0; i < 15; i++)
     {
@@ -81,10 +84,11 @@ int main(int argc, char* argv[])
     }*/
 
     scene.AddObject(std::move(plane));
-    scene.AddObject(std::move(triangle));
+    scene.AddObject(std::move(model));
+    //scene.AddObject(std::move(triangle));
 
     //framebuffer.Clear(ColorConvert(color4_t{ 0, 0.25f, 0, 1 }));
-    scene.Render(framebuffer, camera, 5, 3);
+    scene.Render(framebuffer, camera, 1, 3);
 
     bool quit = false;
     while (!quit)
