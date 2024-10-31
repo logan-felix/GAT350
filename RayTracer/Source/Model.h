@@ -1,5 +1,6 @@
 #pragma once
 #include "Color.h"
+#include "SceneObject.h"
 
 #include <glm/glm.hpp>
 #include <vector>

@@ -65,6 +65,9 @@
     <ClCompile Include="Source\Tracer.cpp">
       <Filter>Source\CPP Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Triangle.cpp">
+      <Filter>Source\CPP Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Actor.h">
@@ -125,6 +128,9 @@
       <Filter>Source\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Transform.h">
+      <Filter>Source\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Triangle.h">
       <Filter>Source\Header Files</Filter>
     </ClInclude>
   </ItemGroup>
