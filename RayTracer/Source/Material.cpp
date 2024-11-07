@@ -18,7 +18,7 @@ bool Metal::Scatter(const ray_t& ray, const raycastHit_t& raycastHit, color3_t& 
     scatter = ray_t{ raycastHit.point, reflected + (randomOnUnitSphere() * m_fuzz) };
     attenuation = m_albedo;
 
-    return Dot(scatter.direction, raycastHit.normal) > 0;
+    return glm::dot(scatter.direction, raycastHit.normal) > 0;
 }
 
 bool Dielectric::Scatter(const ray_t& ray, const raycastHit_t& raycastHit, color3_t& attenuation, ray_t& scatter) const
