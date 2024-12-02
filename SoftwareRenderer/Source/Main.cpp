@@ -9,6 +9,7 @@
 #include "Camera.h"
 #include "Actor.h"
 #include "Random.h"
+#include "Shader.h"
 
 #include <SDL.h>
 #include <iostream>
@@ -36,43 +37,41 @@ int main(int argc, char* argv[])
     Transform cameraTransform{ { 0, 0, -20 } };
 
     Image image;
-    image.Load("space.jpg");
+    image.Load("Images/space.jpg");
 
     Image imageAlpha;
-    imageAlpha.Load("colors.png");
+    imageAlpha.Load("Images/colors.png");
     PostProcess::Alpha(imageAlpha.m_buffer, 100);
 
     int fbWidth = 800;
     int fbHeight = 600;
     Framebuffer framebuffer(renderer, fbWidth, fbHeight);
 
-    vertices_t vertices = { { -5, 5, 0 }, { 5, 5, 0 }, { -5, -5, 0 } };
-    //Model model;
-    std::shared_ptr<Model> teapotModel = std::make_shared<Model>();
-    std::shared_ptr<Model> torusModel = std::make_shared<Model>();
-    std::shared_ptr<Model> sphereModel = std::make_shared<Model>();
+    //vertexbuffer_t vertices = { { -5, 5, 0 }, { 5, 5, 0 }, { -5, -5, 0 } };
 
-    teapotModel->Load("teapot.obj");
-    torusModel->Load("torus.obj");
-    sphereModel->Load("sphere.obj");
+    // shader
+    VertexShader::uniforms.view = camera.GetView();
+    VertexShader::uniforms.projection = camera.GetProjection();
+    VertexShader::uniforms.ambient = color3_t{ 1, 0.5f, 1 };
 
+    VertexShader::uniforms.light.position = glm::vec3{ 10, 10, -10 };
+    VertexShader::uniforms.light.direction = glm::vec3{ 0, -1, 0 };
+    VertexShader::uniforms.light.color = color3_t{ 1 };
+
+
+    Shader::framebuffer = &framebuffer;
+    
+    // models
+    std::shared_ptr<Model> model = std::make_shared<Model>();
+
+    model->Load("Models/sphere.obj");
+
+    // actors
     std::vector<std::unique_ptr<Actor>> actors;
 
-    Transform transform{ { -20, 0, -30 }, glm::vec3{0}, glm::vec3{2}};
-    std::unique_ptr<Actor> teapot = std::make_unique<Actor>(transform, teapotModel);
-    transform = { { 30, 0, 20 }, glm::vec3{0}, glm::vec3{5} };
-    std::unique_ptr<Actor> torus = std::make_unique<Actor>(transform, torusModel);
-    transform = { { 0, 0, 0 }, glm::vec3{0}, glm::vec3{3} };
-    std::unique_ptr<Actor> sphere = std::make_unique<Actor>(transform, sphereModel);
-
-    teapot->SetColor({ 100, 255, 100, 255 });
-    torus->SetColor({ 255, 255, 100, 255 });
-    sphere->SetColor({ 100, 100, 255, 255 });
-
-    actors.push_back(std::move(teapot));
-    actors.push_back(std::move(torus));
-    actors.push_back(std::move(sphere));
-
+    Transform transform{ glm::vec3{ 0 }, glm::vec3{ 0 }, glm::vec3{ 5 } };
+    std::unique_ptr<Actor> actor = std::make_unique<Actor>(transform, model);
+    actors.push_back(std::move(actor));
 
     bool quit = false;
     while (!quit)
@@ -97,7 +96,7 @@ int main(int argc, char* argv[])
         // render
         framebuffer.Clear(color_t{ 0, 0, 0, 255 });
 
-        framebuffer.DrawImage(0, 0, image);
+        //framebuffer.DrawImage(0, 0, image);
 
         for (int i = 0; i < 1; i++)
         {
@@ -154,12 +153,14 @@ int main(int argc, char* argv[])
 #pragma endregion
 
         glm::vec3 direction{ 0 };
-        if (input.GetKeyDown(SDL_SCANCODE_W)) direction.z = 0.5f; // camera forward
-        if (input.GetKeyDown(SDL_SCANCODE_S)) direction.z = -0.5f; // camera backward
-        if (input.GetKeyDown(SDL_SCANCODE_D)) direction.x = 0.5f; // camera right
-        if (input.GetKeyDown(SDL_SCANCODE_A)) direction.x = -0.5f; // camera left
-        if (input.GetKeyDown(SDL_SCANCODE_SPACE)) direction.y = 0.5f; // camera up
-        if (input.GetKeyDown(SDL_SCANCODE_LSHIFT)) direction.y = -0.5f; // camera down
+        int speed = (input.GetKeyDown(SDL_SCANCODE_LSHIFT)) ? 2 : 1;
+
+        if (input.GetKeyDown(SDL_SCANCODE_W)) direction.z = 0.5f * speed; // camera forward
+        if (input.GetKeyDown(SDL_SCANCODE_S)) direction.z = -0.5f * speed; // camera backward
+        if (input.GetKeyDown(SDL_SCANCODE_D)) direction.x = 0.5f * speed; // camera right
+        if (input.GetKeyDown(SDL_SCANCODE_A)) direction.x = -0.5f * speed; // camera left
+        if (input.GetKeyDown(SDL_SCANCODE_E)) direction.y = 0.5f * speed; // camera up
+        if (input.GetKeyDown(SDL_SCANCODE_Q)) direction.y = -0.5f * speed; // camera down
 
         if (input.GetKeyDown(SDL_SCANCODE_UP)) cameraTransform.rotation.x -= 2; // look up
         if (input.GetKeyDown(SDL_SCANCODE_DOWN)) cameraTransform.rotation.x += 2; // look down
@@ -181,13 +182,14 @@ int main(int argc, char* argv[])
         cameraTransform.position += offset * 50.0f * time.GetDeltaTime();
 
         camera.SetView(cameraTransform.position, cameraTransform.position + cameraTransform.GetForward());
+        VertexShader::uniforms.view = camera.GetView();
 
         /*cameraTransform.rotation.z += 90 * time.GetDeltaTime();
         model->Draw(framebuffer, cameraTransform.GetMatrix(), camera);*/
 
         for (auto& actor : actors)
         {
-            actor->Draw(framebuffer, camera);
+            actor->Draw();
         }
 
         framebuffer.Update();
