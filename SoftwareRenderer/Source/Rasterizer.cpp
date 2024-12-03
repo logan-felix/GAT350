@@ -17,6 +17,7 @@ namespace Rasterizer
 		int ymin = (int)std::max<float>(0, std::min({ std::floor(p0.y), std::floor(p1.y), std::floor(p2.y) }));
 		int ymax = (int)std::min<float>((float)framebuffer.m_height - 1, std::max({ std::floor(p0.y), std::floor(p1.y), std::floor(p2.y) }));
 
+
 		for (int y = ymin; y <= ymax; ++y) 
 		{
 			for (int x = xmin; x <= xmax; ++x) 
@@ -40,6 +41,11 @@ namespace Rasterizer
 				{
 					// interpolate vertex attributes
 					color3_t color = w0 * v0.color + w1 * v1.color + w2 * v2.color;
+					float z = w0 * v0.position.z + w1 * v1.position.z + w2 * v2.position.z;
+
+					// check z-buffer
+					if (CheckDepth(framebuffer, p, z)) WriteDepth(framebuffer, p, z);
+					else continue;
 					
 					// create fragment shader input
 					fragment_input_t fragment;
@@ -49,8 +55,20 @@ namespace Rasterizer
 					color4_t output_color = FragmentShader::Process(fragment);
 					framebuffer.DrawPoint(x, y, ColorConvert(output_color));
 				}
+				
 			}
 		}
+
+	}
+
+	bool CheckDepth(Framebuffer& framebuffer, const glm::vec2& position, float z)
+	{
+		return (z < framebuffer.GetDepth()[position.x + position.y * framebuffer.m_width]);
+	}
+
+	void WriteDepth(Framebuffer& framebuffer, const glm::vec2& position, float z)
+	{
+		framebuffer.GetDepth()[position.x + position.y * framebuffer.m_width] = z;
 	}
 
 }

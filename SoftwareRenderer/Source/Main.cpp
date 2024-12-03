@@ -52,7 +52,7 @@ int main(int argc, char* argv[])
     // shader
     VertexShader::uniforms.view = camera.GetView();
     VertexShader::uniforms.projection = camera.GetProjection();
-    VertexShader::uniforms.ambient = color3_t{ 1, 0.5f, 1 };
+    VertexShader::uniforms.ambient = color3_t{ 0.5f };
 
     VertexShader::uniforms.light.position = glm::vec3{ 10, 10, -10 };
     VertexShader::uniforms.light.direction = glm::vec3{ 0, -1, 0 };
@@ -64,12 +64,12 @@ int main(int argc, char* argv[])
     // models
     std::shared_ptr<Model> model = std::make_shared<Model>();
 
-    model->Load("Models/sphere.obj");
+    model->Load("Models/ogre.obj");
 
     // actors
     std::vector<std::unique_ptr<Actor>> actors;
 
-    Transform transform{ glm::vec3{ 0 }, glm::vec3{ 0 }, glm::vec3{ 5 } };
+    Transform transform{ glm::vec3{ 0 }, glm::vec3{ 0, 180, 0 }, glm::vec3{ 5 } };
     std::unique_ptr<Actor> actor = std::make_unique<Actor>(transform, model);
     actors.push_back(std::move(actor));
 

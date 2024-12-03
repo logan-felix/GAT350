@@ -4,6 +4,9 @@
 
 Framebuffer* Shader::framebuffer{ nullptr };
 
+Shader::eFrontFace Shader::front_face = Shader::eFrontFace::CCW;
+Shader::eCullMode Shader::cull_mode = Shader::eCullMode::BACK;
+
 void Shader::Draw(const vertexbuffer_t& vb)
 {
 	// vertex shader
@@ -29,10 +32,33 @@ void Shader::Draw(const vertexbuffer_t& vb)
 		if (!ToScreen(v1, s1)) continue;
 		if (!ToScreen(v2, s2)) continue;
 
+		// check winding order
+		float z = cross(s1 - s0, s2 - s0);
+
+		if (std::fabs(z) < std::numeric_limits<float>::epsilon()) continue;
+		// cull faces
+		switch (cull_mode)
+		{
+		case FRONT:
+			if (front_face == CCW && z > 0) continue;
+			if (front_face == CW && z < 0) continue;
+			break;
+		case BACK:
+			if (front_face == CCW && z < 0) continue;
+			if (front_face == CW && z > 0) continue;
+			break;
+		case NONE:
+			break;
+		default:
+			break;
+		}
+
 		// rasterization
 		Rasterizer::Triangle(*framebuffer, s0, s1, s2, v0, v1, v2);
 		//framebuffer->DrawTriangle(s0.x, s0.y, s1.x, s1.y, s2.x, s2.y, { 255, 255, 255, 255 });
 	}
+
+	
 }
 
 bool Shader::ToScreen(const vertex_output_t& vertex, glm::vec2& screen)

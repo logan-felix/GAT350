@@ -34,6 +34,8 @@ public:
 
 	std::vector<color_t>& Buffer() { return m_buffer; }
 
+	std::vector<float>& GetDepth() { return depth_buffer; }
+
 private:
 	void DrawOctant(int xc, int yc, int x, int y, const color_t& color);
 
@@ -44,6 +46,8 @@ public:
 
 	SDL_Texture* m_texture{ nullptr };
 	std::vector<color_t> m_buffer;
+
+	std::vector<float> depth_buffer;
 
 private:
 	const int INSIDE = 0; // 0000

@@ -10,4 +10,23 @@ public:
 
 public:
 	static class Framebuffer* framebuffer;
+
+	enum eFrontFace
+	{
+		CW,
+		CCW
+	};
+
+	enum eCullMode
+	{
+		FRONT,
+		BACK,
+		NONE
+	};
+
+	static eFrontFace front_face;
+	static eCullMode cull_mode;
 };
+
+
+

@@ -14,4 +14,7 @@ namespace Rasterizer
 		const vertex_output_t& v0,
 		const vertex_output_t& v1,
 		const vertex_output_t& v2);
+
+	bool CheckDepth(Framebuffer& framebuffer, const glm::vec2& position, float z);
+	void WriteDepth(Framebuffer& framebuffer, const glm::vec2& position, float z);
 }

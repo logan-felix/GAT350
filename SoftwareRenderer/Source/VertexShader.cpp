@@ -21,9 +21,10 @@ void VertexShader::Process(const vertex_t& ivertex, vertex_output_t& overtex)
 	glm::vec3 light_dir = glm::normalize(light_position - vposition);*/
 
 	// Directional Light
-	glm::vec3 light_dir = glm::normalize(uniforms.view * glm::vec4{ uniforms.light.direction, 0 } * glm::mat3{ -1 });
+	glm::vec3 light_dir = glm::normalize(uniforms.view * glm::vec4{ -uniforms.light.direction, 0 });
 
 	float intensity = std::max(0.0f, glm::dot(light_dir, overtex.normal));
 	color3_t diffuse = uniforms.light.color * intensity;
+
 	overtex.color = uniforms.ambient + diffuse;
 }
