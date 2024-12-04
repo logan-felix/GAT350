@@ -118,5 +118,8 @@
     <ClInclude Include="Source\Light.h">
       <Filter>Source\Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Material.h">
+      <Filter>Source\Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

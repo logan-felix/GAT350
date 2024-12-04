@@ -50,28 +50,44 @@ int main(int argc, char* argv[])
     //vertexbuffer_t vertices = { { -5, 5, 0 }, { 5, 5, 0 }, { -5, -5, 0 } };
 
     // shader
-    VertexShader::uniforms.view = camera.GetView();
-    VertexShader::uniforms.projection = camera.GetProjection();
-    VertexShader::uniforms.ambient = color3_t{ 0.5f };
+    Shader::uniforms.view = camera.GetView();
+    Shader::uniforms.projection = camera.GetProjection();
+    Shader::uniforms.ambient = color3_t{ 0.5f };
 
-    VertexShader::uniforms.light.position = glm::vec3{ 10, 10, -10 };
-    VertexShader::uniforms.light.direction = glm::vec3{ 0, -1, 0 };
-    VertexShader::uniforms.light.color = color3_t{ 1 };
+    Shader::uniforms.light.position = glm::vec3{ 10, 10, -10 };
+    Shader::uniforms.light.direction = glm::vec3{ 0, -1, 0 };
+    Shader::uniforms.light.color = color3_t{ 1 };
 
 
     Shader::framebuffer = &framebuffer;
     
     // models
     std::shared_ptr<Model> model = std::make_shared<Model>();
-
     model->Load("Models/ogre.obj");
+
+    std::shared_ptr<Model> model2 = std::make_shared<Model>();
+    model2->Load("Models/ogre.obj");
+
+    // materials
+    std::shared_ptr<material_t> blue = std::make_shared<material_t>();
+    blue->albedo = color3_t{ 0, 0, 1 };
+    blue->specular = color3_t{ 1 };
+    blue->shininess = 10.0f;
+
+    std::shared_ptr<material_t> red = std::make_shared<material_t>();
+    red->albedo = color3_t{ 1, 0, 0 };
+    red->specular = color3_t{ 3 };
+    red->shininess = 32.0f;
 
     // actors
     std::vector<std::unique_ptr<Actor>> actors;
 
-    Transform transform{ glm::vec3{ 0 }, glm::vec3{ 0, 180, 0 }, glm::vec3{ 5 } };
-    std::unique_ptr<Actor> actor = std::make_unique<Actor>(transform, model);
+    Transform transform{ glm::vec3{ -3, 0, 0 }, glm::vec3{ 0, 180, 0 }, glm::vec3{ 5 } };
+    Transform transform2{ glm::vec3{ 3, 0, 0 }, glm::vec3{ 0, 180, 0 }, glm::vec3{ 5 } };
+    std::unique_ptr<Actor> actor = std::make_unique<Actor>(transform, model, blue);
+    std::unique_ptr<Actor> actor2 = std::make_unique<Actor>(transform2, model2, red);
     actors.push_back(std::move(actor));
+    actors.push_back(std::move(actor2));
 
     bool quit = false;
     while (!quit)
@@ -182,10 +198,12 @@ int main(int argc, char* argv[])
         cameraTransform.position += offset * 50.0f * time.GetDeltaTime();
 
         camera.SetView(cameraTransform.position, cameraTransform.position + cameraTransform.GetForward());
-        VertexShader::uniforms.view = camera.GetView();
+        Shader::uniforms.view = camera.GetView();
 
-        /*cameraTransform.rotation.z += 90 * time.GetDeltaTime();
-        model->Draw(framebuffer, cameraTransform.GetMatrix(), camera);*/
+        
+
+        //cameraTransform.rotation.z += 90 * time.GetDeltaTime();
+        //model->Draw(framebuffer, cameraTransform.GetMatrix(), camera);
 
         for (auto& actor : actors)
         {
