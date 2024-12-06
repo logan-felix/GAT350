@@ -2,7 +2,9 @@
 This repository showcases two key projects in 3D graphics rendering: a **Software Renderer** and a **Ray Tracer**. Both projects demonstrate advanced rendering techniques, highlighting the power and versatility of computer graphics.  
 ## Purpose
 The repository serves as a resource for learning and experimenting with rendering techniques such as shader implementation, lighting models, and material handling. It is ideal for enthusiasts, students, and developers interested in understanding low-level rendering pipelines and ray tracing algorithms.
+
 ---
+
 ## Included Projects
 ### 1. Software Renderer
 A rasterization-based renderer that supports real-time rendering of 3D models and primitives. It emphasizes shader support and lighting models.
