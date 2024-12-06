@@ -63,7 +63,7 @@ int main(int argc, char* argv[])
     
     // models
     std::shared_ptr<Model> model = std::make_shared<Model>();
-    model->Load("Models/ogre.obj");
+    model->Load("Models/cube.obj");
 
     std::shared_ptr<Model> model2 = std::make_shared<Model>();
     model2->Load("Models/ogre.obj");
@@ -72,22 +72,23 @@ int main(int argc, char* argv[])
     std::shared_ptr<material_t> blue = std::make_shared<material_t>();
     blue->albedo = color3_t{ 0, 0, 1 };
     blue->specular = color3_t{ 1 };
-    blue->shininess = 10.0f;
+    blue->shininess = 32.0f;
 
-    std::shared_ptr<material_t> red = std::make_shared<material_t>();
+    /*std::shared_ptr<material_t> red = std::make_shared<material_t>();
     red->albedo = color3_t{ 1, 0, 0 };
     red->specular = color3_t{ 3 };
-    red->shininess = 32.0f;
+    red->shininess = 32.0f;*/
 
     // actors
     std::vector<std::unique_ptr<Actor>> actors;
 
-    Transform transform{ glm::vec3{ -3, 0, 0 }, glm::vec3{ 0, 180, 0 }, glm::vec3{ 5 } };
-    Transform transform2{ glm::vec3{ 3, 0, 0 }, glm::vec3{ 0, 180, 0 }, glm::vec3{ 5 } };
+    Transform transform{ glm::vec3{ 0 }, glm::vec3{ 0, 60, 0 }, glm::vec3{ 5 } };
     std::unique_ptr<Actor> actor = std::make_unique<Actor>(transform, model, blue);
-    std::unique_ptr<Actor> actor2 = std::make_unique<Actor>(transform2, model2, red);
     actors.push_back(std::move(actor));
-    actors.push_back(std::move(actor2));
+
+    /*Transform transform2{ glm::vec3{ 3, 0, 0 }, glm::vec3{ 0, 180, 0 }, glm::vec3{ 5 } };
+    std::unique_ptr<Actor> actor2 = std::make_unique<Actor>(transform2, model2, red);
+    actors.push_back(std::move(actor2));*/
 
     bool quit = false;
     while (!quit)
